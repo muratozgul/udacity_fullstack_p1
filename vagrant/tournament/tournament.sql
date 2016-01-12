@@ -41,14 +41,27 @@ CREATE TABLE IF NOT EXISTS matches (
   updated_at  TIMESTAMP WITH TIME ZONE  DEFAULT now()
 );
 
-DROP VIEW IF EXISTS home_matches;
+DROP VIEW IF EXISTS registrations;
 
-CREATE VIEW home_matches AS
+CREATE VIEW registrations AS
+  SELECT tournament_players.tournament_id AS tournament,
+         tournament_players.id AS player, 
+         players.name AS name
+  FROM tournament_players
+  LEFT JOIN players
+  ON tournament_players.player_id = players.id
+  GROUP BY tournament_players.id, players.name;
+
+
+DROP VIEW IF EXISTS standings;
+
+CREATE VIEW standings AS
   SELECT tournament_players.id as tp_id, matches.id
   FROM tournament_players
   LEFT JOIN matches
   ON tournament_players.id = matches.home_id
   GROUP BY tournament_players.id, matches.id;
+
 
 
 

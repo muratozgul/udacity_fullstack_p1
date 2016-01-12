@@ -141,6 +141,7 @@ def registerPlayerToTournament(player_id, tournament_id):
     c = db.cursor()
     c.execute(SQL, (player_id, tournament_id))
     result = c.fetchone()[0]
+    print "Player %s registered to tournament %s with id %s." % (player_id, tournament_id, result)
     db.commit()
     db.close()
     return result
@@ -159,6 +160,14 @@ def playerStandings(tournament_id):
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
+    SQL = """SELECT * FROM"""
+    db = connect()
+    c = db.cursor()
+    c.execute(SQL, (player_id, tournament_id))
+    result = c.fetchone()[0]
+    db.commit()
+    db.close()
+    return result
 
 
 def reportMatch(winner, loser):

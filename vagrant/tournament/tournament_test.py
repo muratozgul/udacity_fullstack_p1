@@ -194,5 +194,15 @@ if __name__ == '__main__':
     #testReportMatches()
     #testPairings()
     print "Success!  All tests pass!"
+    print "Repopulate"
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    t1 = registerTournament("PingPongMasters 2016")
+    p1 = registerPlayer("Melpomene Murray")
+    p2 = registerPlayer("Randy Schwartz")
+    rp1 = registerPlayerToTournament(p1, t1)
+    rp2 = registerPlayerToTournament(p2, t1)
+    print "Repopulate done"
 
 
