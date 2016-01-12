@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS matches (
   round       INTEGER NOT NULL,
   home_id     SERIAL  NOT NULL  REFERENCES tournament_players(id) ON DELETE CASCADE,
   away_id     SERIAL  NOT NULL  REFERENCES tournament_players(id) ON DELETE CASCADE CHECK(home_id <> away_id),
-  winner      BOOLEAN NULL,
+  winner_id      INTEGER NULL,
   is_complete BOOLEAN NOT NULL  DEFAULT false,
   is_bye      BOOLEAN NOT NULL  DEFAULT false,
   time        TIMESTAMP WITH TIME ZONE  NULL,
@@ -48,18 +48,6 @@ CREATE VIEW home_matches AS
   FROM tournament_players
   LEFT JOIN matches
   ON tournament_players.id = matches.home_id
-  GROUP BY tournament_players.id, matches.id;
-
-
-DROP VIEW IF EXISTS home_wins;
-
-CREATE VIEW home_wins AS
-  SELECT tournament_players.id as tp_id, matches.id
-  FROM tournament_players
-  LEFT JOIN matches
-  ON tournament_players.id = matches.home_id
-  WHERE winner = true
-  AND is_complete = true
   GROUP BY tournament_players.id, matches.id;
 
 
