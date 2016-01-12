@@ -27,20 +27,48 @@ def testCount():
     print "3. After deleting, countPlayers() returns zero."
 
 
+def testRegisterTournament():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    registerTournament("Chess 2016")
+    c = countTournaments()
+    if c != 1:
+        raise ValueError(
+            "After one tournament registers, countTournament() should be 1.")
+    print "4a. After registering a tournament, countTournaments() returns 1."
+
+
 def testRegister():
     deleteMatches()
     deletePlayers()
+    deleteTournaments()
     registerPlayer("Chandra Nalaar")
     c = countPlayers()
     if c != 1:
         raise ValueError(
             "After one player registers, countPlayers() should be 1.")
-    print "4. After registering a player, countPlayers() returns 1."
+    print "4b. After registering a player, countPlayers() returns 1."
+
+
+def testRegisterToTournament():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    tournament_id = registerTournament("Chess 2016")
+    player_id = registerPlayer("Chandra Nalaar")
+    registerPlayerToTournament(player_id, tournament_id)
+    c = countPlayersOfTournament(tournament_id)
+    if c != 1:
+        raise ValueError(
+            "After one player registers to a tournament, countPlayersOfTournament() should be 1.")
+    print "4c. After registering a player to a tournament, countPlayersOfTournament() returns 1."
 
 
 def testRegisterCountDelete():
     deleteMatches()
     deletePlayers()
+    deleteTournaments()
     registerPlayer("Markov Chaney")
     registerPlayer("Joe Malik")
     registerPlayer("Mao Tsu-hsi")
@@ -56,12 +84,40 @@ def testRegisterCountDelete():
     print "5. Players can be registered and deleted."
 
 
+def testRegisterToTournamentCountDelete():
+    deleteMatches()
+    deletePlayers()
+    deleteTournaments()
+    p1 = registerPlayer("Markov Chaney")
+    p2 = registerPlayer("Joe Malik")
+    p3 = registerPlayer("Mao Tsu-hsi")
+    p4 = registerPlayer("Atlanta Hope")
+    t1 = registerTournament("PingPong 2016")
+    registerPlayerToTournament(p1, t1)
+    registerPlayerToTournament(p2, t1)
+    registerPlayerToTournament(p3, t1)
+    registerPlayerToTournament(p4, t1)
+    c = countPlayersOfTournament(t1)
+    if c != 4:
+        raise ValueError(
+            "After registering four players to a tournament, countTournamentPlayers should be 4.")
+    deletePlayersOfTournament(t1)
+    c = countPlayersOfTournament(t1)
+    if c != 0:
+        raise ValueError("After deleting players of a tournament, countTournamentPlayers should return zero.")
+    print "5. Players can be registered to a tournament and deleted from a tournament."
+
+
 def testStandingsBeforeMatches():
     deleteMatches()
     deletePlayers()
-    registerPlayer("Melpomene Murray")
-    registerPlayer("Randy Schwartz")
-    standings = playerStandings()
+    deleteTournaments()
+    t1 = registerTournament("PingPongMasters 2016")
+    p1 = registerPlayer("Melpomene Murray")
+    p2 = registerPlayer("Randy Schwartz")
+    rp1 = registerPlayerToTournament(p1, t1)
+    rp2 = registerPlayerToTournament(p2, t1)
+    standings = playerStandings(t1)
     if len(standings) < 2:
         raise ValueError("Players should appear in playerStandings even before "
                          "they have played any matches.")
@@ -129,11 +185,14 @@ if __name__ == '__main__':
     testDeleteMatches()
     testDelete()
     testCount()
+    testRegisterTournament()
     testRegister()
+    testRegisterToTournament()
     testRegisterCountDelete()
-    testStandingsBeforeMatches()
-    testReportMatches()
-    testPairings()
+    testRegisterToTournamentCountDelete()
+    #testStandingsBeforeMatches()
+    #testReportMatches()
+    #testPairings()
     print "Success!  All tests pass!"
 
 
