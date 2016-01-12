@@ -138,15 +138,21 @@ def testStandingsBeforeMatches():
 def testReportMatches():
     deleteMatches()
     deletePlayers()
-    registerPlayer("Bruno Walton")
-    registerPlayer("Boots O'Neal")
-    registerPlayer("Cathy Burton")
-    registerPlayer("Diane Grant")
-    standings = playerStandings()
+    deleteTournaments()
+    t1 = registerTournament("PingPongMasters 2016")
+    p1 = registerPlayer("Bruno Walton")
+    p2 = registerPlayer("Boots O'Neal")
+    p3 = registerPlayer("Cathy Burton")
+    p4 = registerPlayer("Diane Grant")
+    rp1 = registerPlayerToTournament(p1, t1)
+    rp2 = registerPlayerToTournament(p2, t1)
+    rp3 = registerPlayerToTournament(p3, t1)
+    rp4 = registerPlayerToTournament(p4, t1)
+    standings = playerStandings(t1)
     [id1, id2, id3, id4] = [row[0] for row in standings]
     reportMatch(id1, id2)
     reportMatch(id3, id4)
-    standings = playerStandings()
+    standings = playerStandings(t1)
     for (i, n, w, m) in standings:
         if m != 1:
             raise ValueError("Each player should have one match recorded.")
@@ -190,19 +196,9 @@ if __name__ == '__main__':
     testRegisterToTournament()
     testRegisterCountDelete()
     testRegisterToTournamentCountDelete()
-    #testStandingsBeforeMatches()
-    #testReportMatches()
+    testStandingsBeforeMatches()
+    testReportMatches()
     #testPairings()
     print "Success!  All tests pass!"
-    print "Repopulate"
-    deleteMatches()
-    deletePlayers()
-    deleteTournaments()
-    t1 = registerTournament("PingPongMasters 2016")
-    p1 = registerPlayer("Melpomene Murray")
-    p2 = registerPlayer("Randy Schwartz")
-    rp1 = registerPlayerToTournament(p1, t1)
-    rp2 = registerPlayerToTournament(p2, t1)
-    print "Repopulate done"
 
 

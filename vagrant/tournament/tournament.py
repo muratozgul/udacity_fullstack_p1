@@ -155,16 +155,16 @@ def playerStandings(tournament_id):
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
-        id: the player's unique id (assigned by the database)
+        id: the player's tournament specific unique id (assigned by the database)
         name: the player's full name (as registered)
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    SQL = """SELECT * FROM"""
+    SQL = "SELECT player AS id, name, wins, matches FROM standings WHERE tournament = %s"
     db = connect()
     c = db.cursor()
-    c.execute(SQL, (player_id, tournament_id))
-    result = c.fetchone()[0]
+    c.execute(SQL, (tournament_id,))
+    result = c.fetchall()
     db.commit()
     db.close()
     return result
@@ -177,6 +177,17 @@ def reportMatch(winner, loser):
       winner:  the id number of the player who won
       loser:  the id number of the player who lost
     """
+    SQL = """
+    INSERT INTO matches (winner_id, loser_id)
+    VALUES (%s, %s) RETURNING (id)
+    """
+    db = connect()
+    c = db.cursor()
+    c.execute(SQL, (winner, loser))
+    result = c.fetchone()[0]
+    db.commit()
+    db.close()
+    return result
  
  
 def swissPairings():

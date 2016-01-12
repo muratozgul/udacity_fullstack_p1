@@ -30,42 +30,61 @@ CREATE TABLE IF NOT EXISTS tournament_players (
 
 CREATE TABLE IF NOT EXISTS matches (
   id          SERIAL  PRIMARY KEY,
-  round       INTEGER NOT NULL,
-  home_id     SERIAL  NOT NULL  REFERENCES tournament_players(id) ON DELETE CASCADE,
-  away_id     SERIAL  NOT NULL  REFERENCES tournament_players(id) ON DELETE CASCADE CHECK(home_id <> away_id),
-  winner_id      INTEGER NULL,
-  is_complete BOOLEAN NOT NULL  DEFAULT false,
-  is_bye      BOOLEAN NOT NULL  DEFAULT false,
+  round       INTEGER NULL,
+  winner_id   INTEGER  NOT NULL  REFERENCES tournament_players(id) ON DELETE CASCADE,
+  loser_id    INTEGER  NULL  REFERENCES tournament_players(id) ON DELETE CASCADE CHECK(winner_id <> loser_id),
   time        TIMESTAMP WITH TIME ZONE  NULL,
   created_at  TIMESTAMP WITH TIME ZONE  DEFAULT now(),
   updated_at  TIMESTAMP WITH TIME ZONE  DEFAULT now()
 );
 
-DROP VIEW IF EXISTS registrations;
+DROP VIEW IF EXISTS registrations CASCADE;
 
 CREATE VIEW registrations AS
   SELECT tournament_players.tournament_id AS tournament,
          tournament_players.id AS player, 
          players.name AS name
-  FROM tournament_players
-  LEFT JOIN players
+  FROM tournament_players LEFT JOIN players
   ON tournament_players.player_id = players.id
   GROUP BY tournament_players.id, players.name;
 
 
-DROP VIEW IF EXISTS standings;
+DROP VIEW IF EXISTS wins CASCADE;
+
+CREATE VIEW wins AS
+  SELECT registrations.tournament AS tournament, 
+         registrations.player AS player,
+         registrations.name AS name,
+         count(matches.winner_id) AS wins
+  FROM registrations LEFT JOIN matches
+  ON registrations.player = matches.winner_id
+  GROUP BY tournament, player, name;
+
+
+DROP VIEW IF EXISTS losses CASCADE;
+
+CREATE VIEW losses AS
+  SELECT registrations.tournament AS tournament, 
+         registrations.player AS player,
+         registrations.name AS name,
+         count(matches.loser_id) AS losses
+  FROM registrations LEFT JOIN matches
+  ON registrations.player = matches.loser_id
+  GROUP BY tournament, player, name;
+
+
+DROP VIEW IF EXISTS standings CASCADE;
 
 CREATE VIEW standings AS
-  SELECT tournament_players.id as tp_id, matches.id
-  FROM tournament_players
-  LEFT JOIN matches
-  ON tournament_players.id = matches.home_id
-  GROUP BY tournament_players.id, matches.id;
-
-
-
-
-
+  SELECT wins.tournament AS tournament, 
+         wins.player AS player,
+         wins.name AS name,
+         wins.wins AS wins,
+         wins.wins + losses.losses AS matches
+  FROM wins LEFT JOIN losses
+  ON wins.tournament = losses.tournament
+  AND wins.player = losses.player
+  ORDER BY wins DESC, matches ASC, name ASC;
 
 
 
