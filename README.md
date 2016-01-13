@@ -25,5 +25,5 @@ Connect to tournaments
 ##### Create tables & views
 `\i tournament.sql`
 ##### Run tests
-Exit psql CLI
+Exit psql CLI and run tests  
 `python tournament_test.py`
