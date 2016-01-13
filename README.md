@@ -14,14 +14,14 @@ https://www.virtualbox.org/wiki/Downloads
 https://www.vagrantup.com/downloads.html
 ##### Start and connect to vm
 `vagrant up`  
-`vagrant ssh`
+`vagrant ssh`  
 ##### Create database "tournaments"
-Navigate to tournament folder and launch PostgreSQL CLI  
+Navigate to tournament folder and launch PostgreSQL CLI   
 `psql`  
-Create database
-`create database tournaments;`
+Create database  
+`create database tournaments;`  
 Connect to tournaments  
-`\c tournaments`
+`\c tournaments`  
 ##### Create tables & views
 `\i tournament.sql`
 ##### Run tests
