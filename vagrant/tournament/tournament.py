@@ -190,7 +190,7 @@ def reportMatch(winner, loser):
     return result
  
  
-def swissPairings():
+def swissPairings(tournament_id):
     """Returns a list of pairs of players for the next round of a match.
   
     Assuming that there are an even number of players registered, each player
@@ -205,5 +205,8 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
+    ps = playerStandings(tournament_id)
+    pairs = [(ps[i][0], ps[i][1], ps[i+1][0], ps[i+1][1]) for i in xrange(0,len(ps)-1,2)]
+    return pairs
 
 
